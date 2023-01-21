@@ -8,57 +8,60 @@ url = "https://books.toscrape.com/catalogue/the-project_856/index.html"
 
 class Produit(UserDict):
     def __init__(self, page_url, soup):
-        self.data = {}
-        
-        self.page_url = page_url
-        self.title = ""
-        self.universal_product_code = ""
-        self.price_excluding_tax = 0
-        self.price_including_tax = 0
-        self.number_available = 0
-        self.product_description = ""
-        self.category = ""
+        self.soup = soup
+        self.data = {'product_page_url': page_url}
 
-        self.review_rating = 0
-        self.image_url = ""
+        self.data["title"] = self.scrap_title()
+        self.data["product_description"] = self.scrap_product_description()
+        self.data["category"] = self.scrap_category()
+        self.data["review_rating"] = self.scrap_review_rating()
+        self.data["image_url"] = self.scrap_image_url()
+        self.data["universal_product_code"] = self.scrap_universal_product_code()
+        self.data["price_excluding_tax"] = self.scrap_price_excluding_tax()
+        self.data["price_including_tax"] = self.scrap_price_including_tax()
+        self.data["number_available"] = self.scrap_number_available()
 
-        body = soup.html.body
-
-        self.title = body.find("h1").text
-        self.data["title"] = body.find("h1").text
-
-        titre_description = body.find(id="product_description")
-        self.product_description = titre_description.next_sibling.next_sibling.text
-
-        breadcrumb = body.find("ul", "breadcrumb")
-        self.category = breadcrumb.find_all("li")[-2].text
-
-        star_rating = body.find("p", "star-rating")["class"][-1]
+    def scrap_title(self):
+        return self.soup.html.body.find("h1").text.strip()
+    
+    def scrap_product_description(self):
+        titre_description = self.soup.find(id="product_description")
+        return titre_description.next_sibling.next_sibling.text.strip()
+    
+    def scrap_category(self):
+        breadcrumb = self.soup.find("ul", "breadcrumb")
+        return breadcrumb.find_all("li")[-2].text.strip()
+    
+    def scrap_review_rating(self):
+        star_rating = self.soup.html.find("p", "star-rating")["class"][-1]
         trad_numbers = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
-        self.review_rating = trad_numbers[star_rating]
+        return trad_numbers[star_rating]
+    
+    def scrap_image_url(self):
+        return self.soup.body.find(id="product_gallery").find("img")["src"]
 
-        self.image_url = body.find(id="product_gallery").find("img")["src"]
+    def get_elements_tables_striped(self, text):
+        table_details = self.soup.html.body.find("table", "table-striped")
+        return table_details.find("th", text=text).parent.td.text.strip()
+    
+    def scrap_universal_product_code(self):
+        return self.get_elements_tables_striped("UPC")
+    
+    def scrap_price_excluding_tax(self):
+        return self.get_elements_tables_striped("Price (excl. tax)")
 
-        table_details = body.find("table", "table-striped")
-        correspondance_table = {
-            "UPC": "universal_product_code",
-            "Price (excl. tax)": "price_excluding_tax",
-            "Price (incl. tax)": "price_including_tax",
-            "Availability": "number_available",
-        }
-        for ligne in table_details.find_all("tr"):
-            cle = ligne.th.text
-            valeur = ligne.td.text
+    def scrap_price_including_tax(self):
+        return self.get_elements_tables_striped("Price (incl. tax)")
 
-            if cle in correspondance_table:
-                setattr(self, correspondance_table[cle], valeur)
+    def scrap_number_available(self):
+        return self.get_elements_tables_striped("Availability")
 
 
 def main():
     chemin_sortie = "Data/data.csv"
     headers = [
         "product_page_url",
-        "universal_ product_code",
+        "universal_product_code",
         "title",
         "price_including_tax",
         "price_excluding_tax",
@@ -73,7 +76,6 @@ def main():
     if reponse.ok:
         soup = BeautifulSoup(reponse.text, features="html.parser")
         produit = Produit(url, soup)
-        print(produit["title"])
 
         with open(chemin_sortie, "w", encoding="utf-8", newline="") as output_csv:
             writer = csv.DictWriter(
