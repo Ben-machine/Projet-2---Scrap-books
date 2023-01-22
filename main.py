@@ -4,14 +4,10 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from produit import Produit
 
-url = "https://books.toscrape.com/catalogue/the-project_856/index.html"
+chemin_sortie = "Data/data.csv"
 
-def main():
-    chemin_sortie = "Data/data.csv"
+def export_data_from_category(url_category):
 
-    url_category = "https://books.toscrape.com/catalogue/category/books/fantasy_19/index.html"
-    #url_category = "https://books.toscrape.com/catalogue/category/books/science-fiction_16/index.html"
-    
     with open(chemin_sortie, "w", encoding="utf-8", newline="") as output_csv:
         writer = csv.DictWriter(
             output_csv,
@@ -35,13 +31,22 @@ def main():
                     writer.writerow(produit.data)
 
                 soup = BeautifulSoup(reponse.text, features="html.parser")        
-                pager = soup.html.body.find('ul', 'pager')
-                if pager:
-                    url_next_page = False
-                    #url_next_page = pager.find('li','next').a['href']
+                pager_next = soup.html.body.find('li','next')
+                if pager_next:
+                    url_next_relative = pager_next.a['href']
+                    url_next_page = urljoin(url_next_page, url_next_relative)
                 else:
                     url_next_page = False
             else:
                 break
+
+
+def main():
+
+    url_category = "https://books.toscrape.com/catalogue/category/books/fantasy_19/index.html"
+    #url_category = "https://books.toscrape.com/catalogue/category/books/science-fiction_16/index.html"
+    #url_category = "https://books.toscrape.com/catalogue/category/books/sports-and-games_17/index.html"
+    
+    export_data_from_category(url_category)
                 
 main()
