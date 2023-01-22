@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 from collections import UserDict
+from urllib.parse import urljoin
+import re
 
 class Produit(UserDict):
     headers = [
@@ -56,7 +58,12 @@ class Produit(UserDict):
         return trad_numbers[star_rating]
     
     def scrap_image_url(self):
-        return self.soup.body.find(id="product_gallery").find("img")["src"]
+        url_relative = self.soup.body.find(id="product_gallery").find("img")["src"]
+        if self['product_page_url']:
+            return urljoin(self['product_page_url'],url_relative)
+        else:
+            return url_relative
+
 
     def get_elements_tables_striped(self, text):
         table_details = self.soup.html.body.find("table", "table-striped")
@@ -66,10 +73,17 @@ class Produit(UserDict):
         return self.get_elements_tables_striped("UPC")
     
     def scrap_price_excluding_tax(self):
-        return self.get_elements_tables_striped("Price (excl. tax)")
+        text = self.get_elements_tables_striped("Price (excl. tax)")
+        result = re.search(r"([\d\.]+)", text)
+        return result.group(1)
 
     def scrap_price_including_tax(self):
-        return self.get_elements_tables_striped("Price (incl. tax)")
+        text = self.get_elements_tables_striped("Price (incl. tax)")
+        result = re.search(r"([\d\.]+)", text)
+        return result.group(1)
 
     def scrap_number_available(self):
-        return self.get_elements_tables_striped("Availability")
+        text = self.get_elements_tables_striped("Availability")
+        result = re.search( r"(\d+)" ,text)
+        return result.group(1)
+
