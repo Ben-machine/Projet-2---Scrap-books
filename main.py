@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from produit import Produit
 
 chemin_sortie = "Data/data.csv"
+home_url = "https://books.toscrape.com/"
 
 def export_data_from_category(url_category):
 
@@ -40,6 +41,17 @@ def export_data_from_category(url_category):
             else:
                 break
 
+def get_urls_categories(home_url):
+    reponse = requests.get(home_url)
+    if reponse.ok:
+        soup = BeautifulSoup(reponse.text, features="html.parser")
+        list_category = soup.find(True, class_="side_categories").ul.li.ul.find_all('li')
+        return [urljoin(home_url, category.a['href']) for category in list_category]
+
+    else:
+        return None
+
+
 
 def main():
 
@@ -47,6 +59,9 @@ def main():
     #url_category = "https://books.toscrape.com/catalogue/category/books/science-fiction_16/index.html"
     #url_category = "https://books.toscrape.com/catalogue/category/books/sports-and-games_17/index.html"
     
-    export_data_from_category(url_category)
+    #export_data_from_category(url_category)
+    list_url_categories = get_urls_categories(home_url)
+    print(list_url_categories)
+
                 
 main()
