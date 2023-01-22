@@ -36,7 +36,7 @@ class Produit(UserDict):
             self.data["price_including_tax"] = self.scrap_price_including_tax()
             self.data["number_available"] = self.scrap_number_available()
         else:
-            print('Erreur de requete')
+            print(f"Erreur de requete sur la page {page_url}")
             #Statut d'erreur ?
 
     def scrap_title(self):
