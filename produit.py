@@ -5,6 +5,8 @@ from urllib.parse import urljoin
 import re
 
 class Produit(UserDict):
+    DIR_IMG = "Data/Img"
+
     headers = [
             "product_page_url",
             "universal_product_code",
@@ -87,3 +89,13 @@ class Produit(UserDict):
         result = re.search( r"(\d+)" ,text)
         return result.group(1)
 
+    def import_img(self):
+        reponse = requests.get(self['image_url'])
+        if reponse.ok:
+            chemin = f"{self.DIR_IMG}/{self['universal_product_code']}.jpg"
+            #chemin = f"{self.DIR_IMG}/{self['category']}/{self['universal_product_code']}.jpg"
+            with open(chemin, "wb") as output_img:
+                output_img.write(reponse.content)
+            return True
+        else:
+            return False
