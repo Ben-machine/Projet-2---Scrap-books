@@ -67,7 +67,6 @@ class Produit(UserDict):
         else:
             return url_relative
 
-
     def get_elements_tables_striped(self, text):
         table_details = self.soup.html.body.find("table", "table-striped")
         return table_details.find("th", text=text).parent.td.text.strip()

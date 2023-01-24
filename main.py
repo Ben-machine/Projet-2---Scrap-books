@@ -3,13 +3,18 @@ import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from produit import Produit
+import re
+import os
 
-chemin_sortie = "Data/data.csv"
-home_url = "https://books.toscrape.com/"
+DIR_DATA = "Data"
+HOME_URL = "https://books.toscrape.com/"
 
-def export_data_from_category(url_category):
+def export_data_from_category(url_category, dir_path):
+    result = re.search(r".+/([a-z\-]+)_[\d]+/(index\.html)?$", url_category)
+    category_name = result.group(1)
+    file_path = f"{dir_path}/data-{category_name}.csv"
 
-    with open(chemin_sortie, "w", encoding="utf-8", newline="") as output_csv:
+    with open(file_path, "w", encoding="utf-8", newline="") as output_csv:
         writer = csv.DictWriter(
             output_csv,
             fieldnames=Produit.headers,
@@ -55,13 +60,11 @@ def get_urls_categories(home_url):
 
 def main():
 
-    url_category = "https://books.toscrape.com/catalogue/category/books/fantasy_19/index.html"
-    #url_category = "https://books.toscrape.com/catalogue/category/books/science-fiction_16/index.html"
-    #url_category = "https://books.toscrape.com/catalogue/category/books/sports-and-games_17/index.html"
+    now = "230124200814"
+    dir_path = f"{DIR_DATA}/{now}"
+    os.makedirs(dir_path)
     
-    #export_data_from_category(url_category)
-    list_url_categories = get_urls_categories(home_url)
-    print(list_url_categories)
+    for url_category in get_urls_categories(HOME_URL)[:3]:
+        export_data_from_category(url_category,dir_path)
 
-                
 main()
