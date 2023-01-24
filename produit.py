@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from collections import UserDict
 from urllib.parse import urljoin
 import re
+import os
 
 class Produit(UserDict):
     DIR_IMG = "Data/Img"
@@ -92,9 +93,9 @@ class Produit(UserDict):
     def import_img(self):
         reponse = requests.get(self['image_url'])
         if reponse.ok:
-            chemin = f"{self.DIR_IMG}/{self['universal_product_code']}.jpg"
-            #chemin = f"{self.DIR_IMG}/{self['category']}/{self['universal_product_code']}.jpg"
-            with open(chemin, "wb") as output_img:
+            os.makedirs(f"{self.DIR_IMG}/{self['category']}", exist_ok=True)
+            file_path = f"{self.DIR_IMG}/{self['category']}/{self['universal_product_code']}.jpg"
+            with open(file_path, "wb") as output_img:
                 output_img.write(reponse.content)
             return True
         else:
