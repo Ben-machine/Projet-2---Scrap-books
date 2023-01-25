@@ -5,16 +5,19 @@ from category import *
 DIR_DATA = "Data"
 HOME_URL = "https://books.toscrape.com/"
 
+
 def main():
     debut = datetime.now()
-    
+
     time_code = datetime.now().strftime("%y%m%d%H%M%S")
     dir_path = f"{DIR_DATA}/{time_code}"
     os.makedirs(dir_path)
 
     for url_category in get_urls_categories(HOME_URL)[3:4]:
-        export_data_from_category(url_category,dir_path, load_img=True)
+        export_data_from_category(url_category, dir_path, load_img=True)
 
     fin = datetime.now()
-    print(fin-debut)
+    print(fin - debut)
+
+
 main()
