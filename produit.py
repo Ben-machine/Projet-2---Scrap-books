@@ -54,7 +54,7 @@ class Produit(UserDict):
     def scrap_category(self):
         breadcrumb = self.soup.find("ul", "breadcrumb")
         return breadcrumb.find_all("li")[-2].text.strip()
-    
+        
     def scrap_review_rating(self):
         star_rating = self.soup.html.find("p", "star-rating")["class"][-1]
         trad_numbers = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
@@ -92,8 +92,10 @@ class Produit(UserDict):
     def import_img(self):
         reponse = requests.get(self['image_url'])
         if reponse.ok:
-            os.makedirs(f"{self.DIR_IMG}/{self['category']}", exist_ok=True)
-            file_path = f"{self.DIR_IMG}/{self['category']}/{self['universal_product_code']}.jpg"
+            normalized_category = self['category'].lower().replace(' ', '-')
+            dir_path = f"{self.DIR_IMG}/{normalized_category}"
+            os.makedirs(dir_path, exist_ok=True)
+            file_path = f"{dir_path}/{self['universal_product_code']}.jpg"
             with open(file_path, "wb") as output_img:
                 output_img.write(reponse.content)
             return True
