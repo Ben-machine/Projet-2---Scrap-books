@@ -31,15 +31,11 @@ class Produit(UserDict):
         if reponse.ok:
             self.soup = BeautifulSoup(reponse.text, features="html.parser")
 
-            self.data["title"] = self.scrap_title()
-            self.data["product_description"] = self.scrap_product_description()
-            self.data["category"] = self.scrap_category()
-            self.data["review_rating"] = self.scrap_review_rating()
-            self.data["image_url"] = self.scrap_image_url()
-            self.data["universal_product_code"] = self.scrap_universal_product_code()
-            self.data["price_excluding_tax"] = self.scrap_price_excluding_tax()
-            self.data["price_including_tax"] = self.scrap_price_including_tax()
-            self.data["number_available"] = self.scrap_number_available()
+            for element in self.headers:
+                scrap_func = f"scrap_{element}"
+                if hasattr(self,scrap_func):
+                    func_scrap = getattr(self,scrap_func)
+                    self.data[element] = func_scrap()
         else:
             print(f"Erreur de requete sur la page {page_url}")
             #Statut d'erreur ?
