@@ -3,8 +3,9 @@ import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from produit import Produit
-import re
 import os
+import re
+from datetime import datetime
 
 DIR_DATA = "Data"
 HOME_URL = "https://books.toscrape.com/"
@@ -60,8 +61,8 @@ def get_urls_categories(home_url):
 
 def main():
 
-    now = "230124200814"
-    dir_path = f"{DIR_DATA}/{now}"
+    time_code = datetime.now().strftime("%y%m%d%H%M%S")
+    dir_path = f"{DIR_DATA}/{time_code}"
     os.makedirs(dir_path)
     
     for url_category in get_urls_categories(HOME_URL)[:3]:
