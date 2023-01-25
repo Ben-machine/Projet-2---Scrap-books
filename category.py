@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from produit import Produit
 import re
 
-def export_data_from_category(url_category, dir_path):
+def export_data_from_category(url_category, dir_path, load_img = False):
     result = re.search(r".+/([a-z\-]+)_[\d]+/(index\.html)?$", url_category)
     category_name = result.group(1)
     file_path = f"{dir_path}/data-{category_name}.csv"
@@ -31,6 +31,9 @@ def export_data_from_category(url_category, dir_path):
                     url_produit_absolute = urljoin(url_next_page,url_produit_relative)
                     produit = Produit(url_produit_absolute)
                     writer.writerow(produit.data)
+
+                    if load_img:
+                        produit.import_img()
 
                 soup = BeautifulSoup(reponse.text, features="html.parser")        
                 pager_next = soup.html.body.find('li','next')
