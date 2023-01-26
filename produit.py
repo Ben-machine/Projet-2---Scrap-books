@@ -4,11 +4,10 @@ from collections import UserDict
 from urllib.parse import urljoin
 import re
 import os
+import config
 
 
 class Produit(UserDict):
-    DIR_IMG = "Data/Img"
-
     headers = [
         "product_page_url",
         "universal_product_code",
@@ -93,7 +92,7 @@ class Produit(UserDict):
         reponse = requests.get(self["image_url"])
         if reponse.ok:
             normalized_category = self["category"].lower().replace(" ", "-")
-            dir_path = f"{self.DIR_IMG}/{normalized_category}"
+            dir_path = f"{config.DIR_IMG}/{normalized_category}"
             os.makedirs(dir_path, exist_ok=True)
             file_path = f"{dir_path}/{self['universal_product_code']}.jpg"
             with open(file_path, "wb") as output_img:

@@ -1,23 +1,19 @@
 import os
 from datetime import datetime
 from category import *
-
-DIR_DATA = "Data"
-HOME_URL = "https://books.toscrape.com/"
+import config
 
 
 def main():
     debut = datetime.now()
 
     time_code = datetime.now().strftime("%y%m%d%H%M%S")
-    dir_path = f"{DIR_DATA}/{time_code}"
+    dir_path = f"{config.DIR_DATA}/{time_code}"
     os.makedirs(dir_path)
 
-    for url_category in get_urls_categories(HOME_URL)[3:4]:
+    for url_category in get_urls_categories(config.HOME_URL):
         export_data_from_category(url_category, dir_path, load_img=True)
 
     fin = datetime.now()
-    print(fin - debut)
-
-
+    print(f"Données extraites en {fin - debut}")
 main()
