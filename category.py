@@ -50,6 +50,8 @@ def export_data_from_category(url_category, dir_path, load_img=False):
                     url_next_page = False
             else:
                 break
+    print(f'Les données de la catégorie "{category_name}" ont été chargées '
+           f'dans le dossier {dir_path}')
 
 
 def get_urls_categories(home_url):
