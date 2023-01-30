@@ -4,14 +4,17 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from produit import Produit
 import re
+import config
 
 
 def export_data_from_category(url_category, dir_path, load_img=False):
     result = re.search(r".+/([a-z\-]+)_[\d]+/(index\.html)?$", url_category)
     category_name = result.group(1)
     file_path = f"{dir_path}/data-{category_name}.csv"
-
-    with open(file_path, "w", encoding="utf-8", newline="") as output_csv:
+    file_encoding = config.FILE_ENCODING
+    
+    with open(file_path, "w", encoding=file_encoding, newline=""
+              ) as output_csv:
         writer = csv.DictWriter(
             output_csv,
             fieldnames=Produit.headers,
@@ -24,6 +27,7 @@ def export_data_from_category(url_category, dir_path, load_img=False):
         while url_next_page:
             reponse = requests.get(url_next_page)
             if reponse.ok:
+                reponse.encoding = config.FILE_ENCODING
                 soup = BeautifulSoup(reponse.text, features="html.parser")
                 titles_book = soup.body.section.find_all("h3")
 
@@ -51,6 +55,7 @@ def export_data_from_category(url_category, dir_path, load_img=False):
 def get_urls_categories(home_url):
     reponse = requests.get(home_url)
     if reponse.ok:
+        reponse.encoding = config.FILE_ENCODING
         soup = BeautifulSoup(reponse.text, features="html.parser")
         
         bloc_categories = soup.find(True, class_="side_categories")

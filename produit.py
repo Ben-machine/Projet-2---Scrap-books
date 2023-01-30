@@ -29,6 +29,7 @@ class Produit(UserDict):
 
         reponse = requests.get(page_url)
         if reponse.ok:
+            reponse.encoding = config.FILE_ENCODING
             self.soup = BeautifulSoup(reponse.text, features="html.parser")
 
             for element in self.headers:
