@@ -7,7 +7,18 @@ import re
 import config
 
 
-def export_data_from_category(url_category, dir_path, load_img=False):
+def export_data_from_category(url_category:str, dir_path:str, 
+                              load_img:bool=False) ->None:
+    """Crée un fichier csv regroupant les infos des produits extraits 
+    de url_category dans dir_path. Optionnellement charge les images des 
+    fiches produits. 
+
+    Args:
+        url_category (str): url de la première page de la catégorie
+        dir_path (str): chemin vers le dossier où charger le fichier créé
+        load_img (bool, optional): indique si les images doivent être chargées.
+            Defaults to False.
+    """    
     result = re.search(r".+/([a-z\-]+)_[\d]+/(index\.html)?$", url_category)
     category_name = result.group(1)
     file_path = f"{dir_path}/data-{category_name}.csv"
@@ -54,7 +65,12 @@ def export_data_from_category(url_category, dir_path, load_img=False):
            f'dans le dossier {dir_path}')
 
 
-def get_urls_categories(home_url):
+def get_urls_categories(home_url:str) -> list[str]:
+    """Retourne une liste des url de la première page liée à chaque catégorie.
+
+    Args:
+        home_url (str): url de la page d'accueil
+    """    
     reponse = requests.get(home_url)
     if reponse.ok:
         reponse.encoding = config.FILE_ENCODING

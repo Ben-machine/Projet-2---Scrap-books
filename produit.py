@@ -8,6 +8,26 @@ import config
 
 
 class Produit(UserDict):
+    """La classe représente un produit du site Book to scrap.
+
+    Attributs:
+        data : dict
+            dictionnaire regroupant les informations sur le produit
+        headers : list
+            liste des champs scrapés et clés du dictionnaire "data"
+        soup : BeautifulSoup 
+            "soup" de la page web du produit
+
+    Methods :
+        scrap_[element]():
+            stock dans data [element] (liste des éléments scrappables 
+            dans headers), \n 
+            scrappé depuis l'objet soup
+        
+        import_img():
+            export dans le dossier fourni par config.py l'image importée
+            depuis "img_url"
+    """    
     headers = [
         "product_page_url",
         "universal_product_code",
@@ -21,7 +41,15 @@ class Produit(UserDict):
         "image_url",
     ]
 
-    def __init__(self, page_url, header_extend=None):
+    def __init__(self, page_url : str, header_extend: list[str] = None) \
+            -> None:
+        """Construit le dictionnaire des attributs de Produit
+
+        Args:
+            page_url (str): url du produit sur le site
+            header_extend (list of string, optional): liste des informations 
+            additionnelles à extraire. Defaults to None.
+        """        
         self.data = {"product_page_url": page_url}
 
         if header_extend is not None:
@@ -68,25 +96,27 @@ class Produit(UserDict):
         else:
             return url_relative
 
-    def get_elements_tables_striped(self, text):
+    #Extrait directement les données issues de la seconde colonne du tableau
+    # "Product information" recherché à partir de la clé en première colonne
+    def __get_elements_tables_striped(self, text):
         table_details = self.soup.html.body.find("table", "table-striped")
         return table_details.find("th", text=text).parent.td.text.strip()
 
     def scrap_universal_product_code(self):
-        return self.get_elements_tables_striped("UPC")
+        return self.__get_elements_tables_striped("UPC")
 
     def scrap_price_excluding_tax(self):
-        text = self.get_elements_tables_striped("Price (excl. tax)")
+        text = self.__get_elements_tables_striped("Price (excl. tax)")
         result = re.search(r"([\d\.]+)", text)
         return result.group(1)
 
     def scrap_price_including_tax(self):
-        text = self.get_elements_tables_striped("Price (incl. tax)")
+        text = self.__get_elements_tables_striped("Price (incl. tax)")
         result = re.search(r"([\d\.]+)", text)
         return result.group(1)
 
     def scrap_number_available(self):
-        text = self.get_elements_tables_striped("Availability")
+        text = self.__get_elements_tables_striped("Availability")
         result = re.search(r"(\d+)", text)
         return result.group(1)
 
