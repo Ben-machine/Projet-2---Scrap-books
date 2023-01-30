@@ -60,7 +60,8 @@ class Produit(UserDict):
         return trad_numbers[star_rating]
 
     def scrap_image_url(self):
-        url_relative = self.soup.body.find(id="product_gallery").find("img")["src"]
+        gallery = self.soup.body.find(id="product_gallery")
+        url_relative = gallery.find("img")["src"]
         if self["product_page_url"]:
             return urljoin(self["product_page_url"], url_relative)
         else:

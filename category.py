@@ -29,7 +29,8 @@ def export_data_from_category(url_category, dir_path, load_img=False):
 
                 for title_h3 in titles_book:
                     url_produit_relative = title_h3.a["href"]
-                    url_produit_absolute = urljoin(url_next_page, url_produit_relative)
+                    url_produit_absolute = urljoin(url_next_page, 
+                                                   url_produit_relative)
                     produit = Produit(url_produit_absolute)
                     writer.writerow(produit.data)
 
@@ -51,9 +52,9 @@ def get_urls_categories(home_url):
     reponse = requests.get(home_url)
     if reponse.ok:
         soup = BeautifulSoup(reponse.text, features="html.parser")
-        list_category = soup.find(True, class_="side_categories").ul.li.ul.find_all(
-            "li"
-        )
+        
+        bloc_categories = soup.find(True, class_="side_categories")
+        list_category = bloc_categories.ul.li.ul.find_all("li")
         return [urljoin(home_url, category.a["href"]) for category in list_category]
 
     else:
