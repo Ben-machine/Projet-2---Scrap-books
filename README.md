@@ -10,7 +10,9 @@ Ce script est développé en Python. Il est optimisé pour être executé dans u
 
 Depuis le dossier où a été cloné le repository ou celui où les fichiers du scrypt ont été copiés,
 entrez dans un terminal la commande suivante pour créer un environnement virtuel nommé *"venv"* :  
-> `python -m venv env`  
+```
+python -m venv env
+```
 
 ### Activation de l'environnement
 
@@ -20,13 +22,17 @@ Les commandes appropriées sont récapitulées dans la documentation à cette ad
 Vous devez remplacer `<venv>` par `env` si vous avez respecter la création de l'environnement
 sous ce nom, comme indiqué dans la commande initiale.  
 Par exemple, sous PowerShell sur Linux, cela donne :
-> `env/bin/Activate.ps1`
+```
+env/bin/Activate.ps1
+```
 
 ### Installation des paquets requis
 
 Enfin, vous pouvez installer l'ensemble des paquets requis à l'installation de ce script à l'aide de `pip` et du fichier *requirements.txt*. 
 Pour cela, utilisez la commande suivante :
-> `pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 
 Vous pouvez vérifier que votre environnement est fonctionnel et dispose des paquets nécessaires en executant `pip freeze` dans votre terminal.
 
@@ -34,7 +40,9 @@ Vous pouvez vérifier que votre environnement est fonctionnel et dispose des paq
 
 Une fois dans un environnement Python ayant les pré-requis nécessaires, le script peut facilement être utilisé en executant le fichier *main.py*.
 En se placant à la base du dossier, cela correspond donc à faire :
-> `python main.py`
+```
+python main.py
+```
 
 ## Export (optionnel) des images
 
@@ -42,4 +50,6 @@ L'export des images pouvant être source d'une forte utilisation de la bande pas
 
 Pour ne pas charger les données, il faut indiquer `False` au paramètre `load_img` de la fonction `export_data_from_category()`.  
 Ce qui donne, au sein du fichier *main.py* (ligne 8 et 9) :  
-> `export_data_from_category(url_category, get_data_folder(), load_img=`***`False`***`)`
+```
+export_data_from_category(url_category, get_data_folder(), load_img=`***`False`***`)
+```
