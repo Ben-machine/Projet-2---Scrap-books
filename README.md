@@ -51,5 +51,5 @@ L'export des images pouvant être source d'une forte utilisation de la bande pas
 Pour ne pas charger les données, il faut indiquer `False` au paramètre `load_img` de la fonction `export_data_from_category()`.  
 Ce qui donne, au sein du fichier *main.py* (ligne 8 et 9) :  
 ```
-export_data_from_category(url_category, get_data_folder(), load_img=`***`False`***`)
+export_data_from_category(url_category, get_data_folder(), load_img=False)
 ```
